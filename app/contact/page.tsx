@@ -226,7 +226,25 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="font-semibold text-[#0F6131] mb-1">Address</p>
-                        <p className="text-muted-foreground">Ghana</p>
+                        <p className="text-muted-foreground leading-relaxed">
+                          Have Etoe, V/R<br />
+                          P.O.BOX 05, HAVE, V/R<br />
+                          Volta Region, Ghana
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-[#8EBA3E]/20 flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-6 w-6 text-[#0F6131]" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#0F6131] mb-1">Phone</p>
+                        <a
+                          href="tel:+233244895520"
+                          className="text-muted-foreground hover:text-[#0F6131] transition-colors"
+                        >
+                          +233 24 489 5520
+                        </a>
                       </div>
                     </div>
                     <div className="flex items-start space-x-4">
@@ -236,10 +254,10 @@ export default function ContactPage() {
                       <div>
                         <p className="font-semibold text-[#0F6131] mb-1">Email</p>
                         <a
-                          href="mailto:info@edymvillageenterprise.com"
-                          className="text-muted-foreground hover:text-[#0F6131] transition-colors"
+                          href="mailto:EDYMVILLAGEENTERPRISE@GMAIL.COM"
+                          className="text-muted-foreground hover:text-[#0F6131] transition-colors break-all"
                         >
-                          info@edymvillageenterprise.com
+                          EDYMVILLAGEENTERPRISE@GMAIL.COM
                         </a>
                       </div>
                     </div>

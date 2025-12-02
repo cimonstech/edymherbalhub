@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -125,35 +126,55 @@ export function Navbar() {
         </div>
 
         {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-md z-40 overflow-y-auto">
-            <div className="space-y-1 border-t pb-6 pt-4 px-3">
-              {navItems.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "block px-4 py-3 text-base font-medium transition-colors border-l-4 rounded-r-lg touch-manipulation min-h-[44px] flex items-center",
-                      active
-                        ? "text-[#0F6131] font-semibold border-[#0F6131] bg-[#0F6131]/5"
-                        : "text-muted-foreground hover:text-[#0F6131] hover:bg-muted/50 border-transparent"
-                    )}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-              <div className="px-4 pt-4 pb-2">
-                <Button asChild className="w-full min-h-[44px] text-base" size="lg">
-                  <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Partner With Us</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="md:hidden fixed inset-0 top-14 bg-black/50 z-40"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              {/* Menu Panel */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+                className="md:hidden fixed inset-y-0 top-14 right-0 w-80 max-w-[85vw] bg-background/98 backdrop-blur-md z-50 overflow-y-auto shadow-2xl"
+              >
+                <div className="space-y-1 border-t pb-6 pt-4 px-3">
+                  {navItems.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "block px-4 py-3 text-base font-medium transition-colors border-l-4 rounded-r-lg touch-manipulation min-h-[44px] flex items-center",
+                          active
+                            ? "text-[#0F6131] font-semibold border-[#0F6131] bg-[#0F6131]/5"
+                            : "text-muted-foreground hover:text-[#0F6131] hover:bg-muted/50 border-transparent"
+                        )}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                  <div className="px-4 pt-4 pb-2">
+                    <Button asChild className="w-full min-h-[44px] text-base" size="lg">
+                      <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Partner With Us</Link>
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
