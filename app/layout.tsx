@@ -24,10 +24,36 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon/favicon.ico" },
+      { url: "/favicon/favicon.ico", sizes: "any" },
       { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
+    apple: [
+      { url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/favicon/site.webmanifest",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://edymvillageenterprise.com",
+    siteName: "EDYM Herbal Hub",
+    title: "EDYM Herbal Hub | A New Era of Herbal Agriculture in Ghana",
+    description: "EDYM Herbal Hub is building a modern, youth-led herbal agriculture ecosystem—combining cultivation, processing, training, and sustainable rural enterprise.",
+    images: [
+      {
+        url: "https://edymvillageenterprise.com/images/edym%20village%20logo.png",
+        width: 1200,
+        height: 630,
+        alt: "EDYM Herbal Hub Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EDYM Herbal Hub | A New Era of Herbal Agriculture in Ghana",
+    description: "EDYM Herbal Hub is building a modern, youth-led herbal agriculture ecosystem—combining cultivation, processing, training, and sustainable rural enterprise.",
+    images: ["https://edymvillageenterprise.com/images/edym%20village%20logo.png"],
   },
 };
 
