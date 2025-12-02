@@ -52,12 +52,13 @@ export function Navbar() {
   };
 
   return (
-    <nav className={cn(
-      "sticky top-0 z-50 w-full border-b transition-all duration-300",
-      scrolled 
-        ? "bg-background/98 backdrop-blur-md shadow-sm" 
-        : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-    )}>
+    <>
+      <nav className={cn(
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
+        scrolled 
+          ? "bg-background/98 backdrop-blur-md shadow-sm" 
+          : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      )}>
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex h-14 sm:h-16 items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
@@ -136,60 +137,63 @@ export function Navbar() {
             )}
           </button>
         </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence mode="wait">
-          {mobileMenuOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="md:hidden fixed inset-0 bg-black/60 z-[9998]"
-                onClick={() => setMobileMenuOpen(false)}
-              />
-              {/* Menu Panel */}
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
-                className="md:hidden fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-900 border-l-2 border-[#0F6131]/20 shadow-2xl z-[9999] overflow-y-auto"
-              >
-                <div className="pt-20 pb-6 px-4">
-                  <div className="space-y-2">
-                    {navItems.map((item) => {
-                      const active = isActive(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={cn(
-                            "block px-4 py-3 text-base font-medium transition-colors border-l-4 rounded-r-lg touch-manipulation min-h-[44px] flex items-center",
-                            active
-                              ? "text-[#0F6131] font-semibold border-[#0F6131] bg-[#0F6131]/10"
-                              : "text-gray-700 dark:text-gray-300 hover:text-[#0F6131] hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent"
-                          )}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {item.label}
-                        </Link>
-                      );
-                    })}
-                    <div className="px-4 pt-6 pb-2">
-                      <Button asChild className="w-full min-h-[44px] text-base bg-[#0F6131] hover:bg-[#0F6131]/90 text-white" size="lg">
-                        <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Partner With Us</Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
       </div>
     </nav>
+    
+    {/* Mobile Navigation - Rendered outside nav for proper z-index stacking */}
+    <AnimatePresence mode="wait">
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 bg-black/60"
+            onClick={() => setMobileMenuOpen(false)}
+            style={{ zIndex: 99998 }}
+          />
+          {/* Menu Panel */}
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-gray-900 border-l-2 border-[#0F6131]/20 shadow-2xl overflow-y-auto"
+            style={{ zIndex: 99999 }}
+          >
+            <div className="pt-20 pb-6 px-4">
+              <div className="space-y-2">
+                {navItems.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "block px-4 py-3 text-base font-medium transition-colors border-l-4 rounded-r-lg touch-manipulation min-h-[44px] flex items-center",
+                        active
+                          ? "text-[#0F6131] font-semibold border-[#0F6131] bg-[#0F6131]/10"
+                          : "text-gray-700 dark:text-gray-300 hover:text-[#0F6131] hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+                <div className="px-4 pt-6 pb-2">
+                  <Button asChild className="w-full min-h-[44px] text-base bg-[#0F6131] hover:bg-[#0F6131]/90 text-white" size="lg">
+                    <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Partner With Us</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+    </>
   );
 }
