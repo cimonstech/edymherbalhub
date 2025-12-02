@@ -45,19 +45,19 @@ export function Navbar() {
         ? "bg-background/98 backdrop-blur-md shadow-sm" 
         : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     )}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
+          <Link href="/" className="flex items-center flex-shrink-0">
             <img
               src="/images/edym%20village%20logo.png"
               alt="EDYM Herbal Hub Logo"
-              className="h-12 w-auto"
+              className="h-8 sm:h-10 md:h-12 w-auto"
               style={{ imageRendering: 'crisp-edges' }}
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-6">
+          <div className="hidden lg:flex lg:items-center lg:space-x-4 xl:space-x-6">
             {navItems.map((item) => {
               const active = isActive(item.href);
               return (
@@ -65,7 +65,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "text-sm font-medium transition-colors relative pb-1",
+                    "text-xs xl:text-sm font-medium transition-colors relative pb-1 px-1 xl:px-0",
                     active
                       ? "text-[#0F6131] font-semibold"
                       : "text-muted-foreground hover:text-[#0F6131]"
@@ -78,14 +78,41 @@ export function Navbar() {
                 </Link>
               );
             })}
-            <Button asChild>
+            <Button asChild size="sm" className="ml-2 xl:ml-0">
               <Link href="/contact">Partner With Us</Link>
+            </Button>
+          </div>
+
+          {/* Tablet Navigation - Compact */}
+          <div className="hidden md:flex lg:hidden md:items-center md:space-x-2">
+            {navItems.slice(0, 4).map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-xs font-medium transition-colors relative pb-1 px-1",
+                    active
+                      ? "text-[#0F6131] font-semibold"
+                      : "text-muted-foreground hover:text-[#0F6131]"
+                  )}
+                >
+                  {item.label.length > 10 ? item.label.substring(0, 8) + "..." : item.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F6131] rounded-full"></span>
+                  )}
+                </Link>
+              );
+            })}
+            <Button asChild size="sm" className="ml-1">
+              <Link href="/contact">Partner</Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden p-2 -mr-2 touch-manipulation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -99,8 +126,8 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="space-y-1 border-t pb-4 pt-4">
+          <div className="md:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-md z-40 overflow-y-auto">
+            <div className="space-y-1 border-t pb-6 pt-4 px-3">
               {navItems.map((item) => {
                 const active = isActive(item.href);
                 return (
@@ -108,10 +135,10 @@ export function Navbar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "block px-3 py-2 text-base font-medium transition-colors border-l-4",
+                      "block px-4 py-3 text-base font-medium transition-colors border-l-4 rounded-r-lg touch-manipulation min-h-[44px] flex items-center",
                       active
                         ? "text-[#0F6131] font-semibold border-[#0F6131] bg-[#0F6131]/5"
-                        : "text-muted-foreground hover:text-[#0F6131] border-transparent"
+                        : "text-muted-foreground hover:text-[#0F6131] hover:bg-muted/50 border-transparent"
                     )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -119,9 +146,9 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <div className="px-3 pt-4">
-                <Button asChild className="w-full">
-                  <Link href="/contact">Partner With Us</Link>
+              <div className="px-4 pt-4 pb-2">
+                <Button asChild className="w-full min-h-[44px] text-base" size="lg">
+                  <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Partner With Us</Link>
                 </Button>
               </div>
             </div>

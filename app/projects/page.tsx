@@ -13,7 +13,7 @@ export default function ProjectsPage() {
     <>
       {/* Hero Section with Background Image */}
       <section className="relative py-0 w-full">
-        <div className="relative min-h-[90vh] flex items-center w-full">
+        <div className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center w-full">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <img
@@ -25,17 +25,17 @@ export default function ProjectsPage() {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 w-full px-0 py-0">
+          <div className="relative z-10 w-full px-0 py-8 sm:py-12 md:py-16 lg:py-20">
             <AnimatedSection>
-              <div className="w-full max-w-4xl mx-auto text-center text-white px-4 sm:px-6 lg:px-8">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-0 drop-shadow-2xl leading-tight">
+              <div className="w-full max-w-4xl mx-auto text-center text-white px-4 sm:px-6 md:px-8 lg:px-12">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-0 drop-shadow-2xl leading-tight px-2">
                   Innovative Herbal Agriculture Projects
                 </h1>
-                <p className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto drop-shadow-lg leading-relaxed mb-0 mt-4">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 max-w-3xl mx-auto drop-shadow-lg leading-relaxed mb-0 mt-3 sm:mt-4 px-2">
                   EDYM Herbal Hub runs innovative herbal agriculture projects that improve livelihoods, expand markets, and strengthen local economies.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-                  <Button asChild size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/20 backdrop-blur-sm shadow-lg">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-5 sm:mt-6 px-2">
+                  <Button asChild size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/20 backdrop-blur-sm shadow-lg text-sm sm:text-base min-h-[44px] sm:min-h-[48px] px-4 sm:px-6 w-full sm:w-auto">
                     <Link href="/impact">
                       Discover Our Impact
                     </Link>

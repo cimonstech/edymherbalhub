@@ -22,40 +22,40 @@ interface ProjectCardProps {
 export function ProjectCard({ id, title, subtitle, description, status, location, impact, featured }: ProjectCardProps) {
   return (
     <Card className={`group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${featured ? "border-[#0F6131]" : ""}`}>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
+      <CardHeader className="p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
             {subtitle && (
-              <p className="text-sm text-muted-foreground mb-1">{subtitle}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-1">{subtitle}</p>
             )}
-            <CardTitle className="text-xl">{title}</CardTitle>
+            <CardTitle className="text-lg sm:text-xl break-words">{title}</CardTitle>
           </div>
           {featured && (
-            <span className="px-2 py-1 text-xs font-medium bg-[#FFCD06]/20 text-[#0F6131] rounded border border-[#FFCD06]/30">
+            <span className="px-2 py-1 text-xs font-medium bg-[#FFCD06]/20 text-[#0F6131] rounded border border-[#FFCD06]/30 flex-shrink-0">
               Featured
             </span>
           )}
         </div>
-        <CardDescription className="mt-2">{description}</CardDescription>
+        <CardDescription className="mt-2 text-xs sm:text-sm">{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="h-4 w-4 mr-1" />
-            {location}
+      <CardContent className="p-4 sm:p-6 pt-0">
+        <div className="space-y-2 sm:space-y-3">
+          <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
+            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+            <span className="truncate">{location}</span>
           </div>
-          <div className="flex items-center">
-            <span className="text-sm font-medium">Status: </span>
-            <span className="ml-2 px-2 py-1 text-xs font-medium bg-[#8EBA3E]/20 text-[#0F6131] rounded border border-[#8EBA3E]/30">
+          <div className="flex items-center flex-wrap gap-2">
+            <span className="text-xs sm:text-sm font-medium">Status: </span>
+            <span className="px-2 py-1 text-xs font-medium bg-[#8EBA3E]/20 text-[#0F6131] rounded border border-[#8EBA3E]/30">
               {status}
             </span>
           </div>
           {impact && (
             <div className="pt-2 border-t">
-              <p className="text-sm font-medium mb-2">Impact:</p>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <p className="text-xs sm:text-sm font-medium mb-2">Impact:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
                 {Object.entries(impact).map(([key, value]) => (
-                  <div key={key}>
+                  <div key={key} className="break-words">
                     <span className="text-muted-foreground capitalize">{key}: </span>
                     <span className="font-medium">{value}</span>
                   </div>
@@ -65,8 +65,8 @@ export function ProjectCard({ id, title, subtitle, description, status, location
           )}
         </div>
       </CardContent>
-      <CardFooter>
-        <Button asChild variant="outline" className="w-full">
+      <CardFooter className="p-4 sm:p-6 pt-0">
+        <Button asChild variant="outline" className="w-full min-h-[44px] text-sm sm:text-base">
           <Link href={`/projects/${id}`}>
             Learn More <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

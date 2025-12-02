@@ -48,27 +48,27 @@ export function ServicesSection() {
           </div>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <AnimatedSection key={index} delay={0.1 * index}>
                 <Card className="bg-white hover:shadow-xl transition-all duration-300 border-2 overflow-hidden group h-full flex flex-col">
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
                     <img
                       src={service.image}
                       alt={service.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center">
-                      <Icon className="h-6 w-6 text-[#0F6131]" />
+                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center">
+                      <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-[#0F6131]" />
                     </div>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                  <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-lg sm:text-xl">{service.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="flex-1">
-                    <CardDescription className="text-sm leading-relaxed">
+                  <CardContent className="flex-1 p-4 sm:p-6 pt-0">
+                    <CardDescription className="text-xs sm:text-sm leading-relaxed">
                       {service.description}
                     </CardDescription>
                   </CardContent>
