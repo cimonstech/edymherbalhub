@@ -31,6 +31,39 @@ const contactReasons = [
   },
 ];
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_NAME_LENGTH = 2;
+const MAX_NAME_LENGTH = 100;
+const MIN_MESSAGE_LENGTH = 10;
+const MAX_MESSAGE_LENGTH = 2000;
+
+function validateName(name: string): string {
+  const t = name.trim();
+  if (!t) return "Name is required.";
+  if (t.length < MIN_NAME_LENGTH) return `Name must be at least ${MIN_NAME_LENGTH} characters.`;
+  if (t.length > MAX_NAME_LENGTH) return `Name must be no more than ${MAX_NAME_LENGTH} characters.`;
+  return "";
+}
+
+function validateEmail(email: string): string {
+  if (!email.trim()) return "Email is required.";
+  if (!EMAIL_REGEX.test(email.trim())) return "Please enter a valid email address.";
+  return "";
+}
+
+function validateSubject(subject: string): string {
+  if (!subject) return "Please select a subject.";
+  return "";
+}
+
+function validateMessage(message: string): string {
+  const t = message.trim();
+  if (!t) return "Message is required.";
+  if (t.length < MIN_MESSAGE_LENGTH) return `Message must be at least ${MIN_MESSAGE_LENGTH} characters.`;
+  if (t.length > MAX_MESSAGE_LENGTH) return `Message must be no more than ${MAX_MESSAGE_LENGTH} characters.`;
+  return "";
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -38,19 +71,76 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateAll = () => {
+    const nameErr = validateName(formData.name);
+    const emailErr = validateEmail(formData.email);
+    const subjectErr = validateSubject(formData.subject);
+    const messageErr = validateMessage(formData.message);
+    setErrors({
+      name: nameErr,
+      email: emailErr,
+      subject: subjectErr,
+      message: messageErr,
+    });
+    return !(nameErr || emailErr || subjectErr || messageErr);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    if (!validateAll()) return;
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+      alert("Thank you for your message! We'll get back to you soon.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setErrors({});
+      setTouched({});
+    } catch {
+      alert("Failed to send. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (touched[name]) {
+      const validators: Record<string, (v: string) => string> = {
+        name: validateName,
+        email: validateEmail,
+        subject: validateSubject,
+        message: validateMessage,
+      };
+      const fn = validators[name];
+      if (fn) setErrors((prev) => ({ ...prev, [name]: fn(value) }));
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    const validators: Record<string, (v: string) => string> = {
+      name: validateName,
+      email: validateEmail,
+      subject: validateSubject,
+      message: validateMessage,
+    };
+    const fn = validators[name];
+    if (fn) setErrors((prev) => ({ ...prev, [name]: fn(value) }));
   };
 
   return (
@@ -128,15 +218,15 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Form */}
             <AnimatedSection>
-              <Card className="border-2 border-[#8EBA3E]/30 shadow-xl">
+              <Card id="form" className="border-2 border-[#8EBA3E]/30 shadow-xl scroll-mt-24">
                 <CardHeader>
                   <CardTitle className="text-2xl text-[#0F6131]">Send Us a Message</CardTitle>
                   <CardDescription className="text-base">
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Fill out the form below and we&apos;ll get back to you as soon as possible.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#0F6131]">
                         Name
@@ -145,11 +235,22 @@ export default function ContactPage() {
                         type="text"
                         id="name"
                         name="name"
-                        required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border-2 border-[#8EBA3E]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all"
+                        onBlur={handleBlur}
+                        placeholder="Your full name"
+                        maxLength={MAX_NAME_LENGTH}
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? "name-error" : undefined}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all ${
+                          errors.name ? "border-red-500" : "border-[#8EBA3E]/30"
+                        }`}
                       />
+                      {errors.name && (
+                        <p id="name-error" className="mt-1 text-sm text-red-600" role="alert">
+                          {errors.name}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium mb-2 text-[#0F6131]">
@@ -159,11 +260,21 @@ export default function ContactPage() {
                         type="email"
                         id="email"
                         name="email"
-                        required
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border-2 border-[#8EBA3E]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all"
+                        onBlur={handleBlur}
+                        placeholder="you@example.com"
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? "email-error" : undefined}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all ${
+                          errors.email ? "border-red-500" : "border-[#8EBA3E]/30"
+                        }`}
                       />
+                      {errors.email && (
+                        <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+                          {errors.email}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="subject" className="block text-sm font-medium mb-2 text-[#0F6131]">
@@ -172,10 +283,14 @@ export default function ContactPage() {
                       <select
                         id="subject"
                         name="subject"
-                        required
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border-2 border-[#8EBA3E]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all"
+                        onBlur={handleBlur}
+                        aria-invalid={!!errors.subject}
+                        aria-describedby={errors.subject ? "subject-error" : undefined}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all ${
+                          errors.subject ? "border-red-500" : "border-[#8EBA3E]/30"
+                        }`}
                       >
                         <option value="">Select a subject</option>
                         <option value="general">General inquiries</option>
@@ -185,6 +300,11 @@ export default function ContactPage() {
                         <option value="investment">Investment opportunities</option>
                         <option value="other">Other</option>
                       </select>
+                      {errors.subject && (
+                        <p id="subject-error" className="mt-1 text-sm text-red-600" role="alert">
+                          {errors.subject}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium mb-2 text-[#0F6131]">
@@ -193,16 +313,35 @@ export default function ContactPage() {
                       <textarea
                         id="message"
                         name="message"
-                        required
                         rows={6}
                         value={formData.message}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border-2 border-[#8EBA3E]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all resize-none"
+                        onBlur={handleBlur}
+                        placeholder="Your message (min. 10 characters)"
+                        maxLength={MAX_MESSAGE_LENGTH}
+                        aria-invalid={!!errors.message}
+                        aria-describedby={errors.message ? "message-error" : undefined}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0F6131] focus:border-transparent transition-all resize-none ${
+                          errors.message ? "border-red-500" : "border-[#8EBA3E]/30"
+                        }`}
                       />
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {formData.message.length} / {MAX_MESSAGE_LENGTH} characters
+                      </p>
+                      {errors.message && (
+                        <p id="message-error" className="mt-1 text-sm text-red-600" role="alert">
+                          {errors.message}
+                        </p>
+                      )}
                     </div>
-                    <Button type="submit" className="w-full bg-[#0F6131] hover:bg-[#0F6131]/90 text-white shadow-lg" size="lg">
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#0F6131] hover:bg-[#0F6131]/90 text-white shadow-lg disabled:opacity-70"
+                      size="lg"
+                      disabled={isSubmitting}
+                    >
                       <Send className="mr-2 h-4 w-4" />
-                      Send Message
+                      {isSubmitting ? "Sending…" : "Send Message"}
                     </Button>
                   </form>
                 </CardContent>
@@ -227,9 +366,10 @@ export default function ContactPage() {
                       <div>
                         <p className="font-semibold text-[#0F6131] mb-1">Address</p>
                         <p className="text-muted-foreground leading-relaxed">
-                          Have Etoe, V/R<br />
-                          P.O.BOX 05, HAVE, V/R<br />
-                          Volta Region, Ghana
+                          EDYM Herbal Hub Company Limited<br />
+                          No. 55 Apple Street<br />
+                          Adjiringano, East Legon<br />
+                          Accra, Ghana
                         </p>
                       </div>
                     </div>
@@ -254,10 +394,10 @@ export default function ContactPage() {
                       <div>
                         <p className="font-semibold text-[#0F6131] mb-1">Email</p>
                         <a
-                          href="mailto:EDYMVILLAGEENTERPRISE@GMAIL.COM"
+                          href="mailto:edymherbalhub@gmail.com"
                           className="text-muted-foreground hover:text-[#0F6131] transition-colors break-all"
                         >
-                          EDYMVILLAGEENTERPRISE@GMAIL.COM
+                          Edymherbalhub@gmail.com
                         </a>
                       </div>
                     </div>

@@ -1,11 +1,32 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/shared/Section";
 import { blogPosts } from "@/data/blog";
 import { Calendar, User } from "lucide-react";
 
+const BASE_URL = "https://edymvillageenterprise.com";
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = blogPosts.find((p) => p.id === slug);
+  if (!post) return { title: "Post Not Found | EDYM Herbal Hub" };
+  return {
+    title: `${post.title} | EDYM Herbal Hub`,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${post.id}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `${BASE_URL}/blog/${post.id}`,
+      type: "article",
+      publishedTime: post.date,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

@@ -124,14 +124,11 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/80">
             <p className="text-center sm:text-left">&copy; {new Date().getFullYear()} EDYM Herbal Hub. All rights reserved.</p>
             <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6">
-              <Link href="/contact" className="hover:text-white active:text-white transition-colors touch-manipulation">
+              <Link href="/privacy" className="hover:text-white active:text-white transition-colors touch-manipulation">
                 Privacy Policy
               </Link>
-              <Link href="/contact" className="hover:text-white active:text-white transition-colors touch-manipulation">
+              <Link href="/terms" className="hover:text-white active:text-white transition-colors touch-manipulation">
                 Terms of Service
-              </Link>
-              <Link href="/contact" className="hover:text-white active:text-white transition-colors touch-manipulation">
-                Cookie Policy
               </Link>
             </div>
           </div>
